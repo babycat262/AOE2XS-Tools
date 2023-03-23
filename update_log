@@ -1,0 +1,7 @@
+## Update details for this repository ##
+[2023-03-19]
+    发布 "AOE2XS-Tools Beta_1.0"
+
+[2023-03-24]
+    新增UDF函数`random()`于 xs_inner_func.xs 中
+
