@@ -33,8 +33,6 @@ void enaR(string name=""){xsEnableRule(name);}
 void enaRG(string name=""){xsEnableRuleGroup(name);}
 // xsIsRuleEnabled -> isRena
 bool isRena(string name=""){return(xsIsRuleEnabled(name));}
-// xsIsRuleGroupEnabled -> isRGena 
-//bool isRGena(string name=""){return(xsIsRuleGroupEnabled(name));}
 // xsSetRuleMaxInterval -> setRMaxI 
 void setRMaxI(string name="", int I=1){xsSetRuleMaxInterval(name,I);}
 // xsSetRuleMaxIntervalSelf -> setRMaxIS 
@@ -118,7 +116,7 @@ int ArrSize(int arr=-1){return(xsArrayGetSize(arr));}
 void Chat(string mes="",string c="",int n=-512){if((mes=="")&&(n==-512)){xsChatData(c);} else if((mes=="")&&(n!=-512)){xsChatData(c+n);} else if((mes!="")&&(n==-512)){xsChatData(c+mes);} else if((mes!="")&&(n!=-512)){xsChatData(c+mes+n);}}
 // xsEffectAmount -> Effect 
 void Effect(int mod=0,int id=0,int attr=0,float val=0.0,int p=-1){xsEffectAmount(mod,id,attr,val,p);}
-// xsGetGameTime -> gameTime 
+// xsGetGameTime -> GameTime 
 int GameTime(){return(xsGetGameTime());}
 // xsGetMapID -> MapID 
 int MapID(){return(xsGetMapID());}
@@ -126,26 +124,22 @@ int MapID(){return(xsGetMapID());}
 int MapH(){return(xsGetMapHeight());}
 // xsGetMapWidth -> MapW 
 int MapW(){return(xsGetMapWidth());}
-// xsGetMapName -> MapName 
+// xsGetMapName -> MapName ?
 string MapName(bool ext=true){return(xsGetMapName(ext));}
-// xsGetNumPlayers -> getNumP 
+// xsGetNumPlayers -> getNumP ?
 int getNumP(){return(xsGetNumPlayers());}
 // xsGetObjectCount -> objCount 
 int objCount(int p=0,int unit=0){return(xsGetObjectCount(p,unit));}
 // xsGetObjectCountTotal -> objCountT 
 int objCountT(int p=0,int unit=0){return(xsGetObjectCountTotal(p,unit));}
-// xsGetPlayerCivilization(int playerNumber) -> getCiv 
+// xsGetPlayerCivilization(int playerNumber) -> getCiv ?
 int getCiv(int p=0){return(xsGetPlayerCivilization(p));}
-// xsGetPlayerInGame -> isAliveP 
+// xsSetContextPlayer -> defaultP 
+void defaultP(int p=1){xsSetContextPlayer(p);}
+// xsGetPlayerInGame -> isAliveP ?
 bool isAliveP(int p=0){return(xsGetPlayerInGame(p));}
 // xsGetPlayerNumberOfTechs -> getResTechsP 
 int getAviTechsP(int p=0){return(xsGetPlayerNumberOfTechs(p));}
-// xsGetRandomNumber -> randNum 
-int randNum(){return(xsGetRandomNumber());}  // [0, 32767)
-// xsGetRandomNumberLH -> randNumLH 
-int randNumLH(int low=0,int high=0){return(xsGetRandomNumberLH(low,high));}
-// xsGetRandomNumberMax -> randMax 
-int randMax(int max=0){return(xsGetRandomNumberMax(max));}
 // xsGetVictoryCondition -> vicCond
 int vicCond(){return(xsGetVictoryCondition());}
 // xsGetVictoryConditionForSecondaryGameMode -> vicSecCond
@@ -156,13 +150,13 @@ int vicP(){return(xsGetVictoryPlayer());}
 int vicTime(){return(xsGetVictoryTime());}
 // xsGetVictoryTimeForSecondaryGameMode() -> vicSecTime
 int vicSecTime(){return(xsGetVictoryTimeForSecondaryGameMode());}
-// xsGetVictoryType -> vicType 
+// xsGetVictoryType -> vicType ?
 int vicType(){return(xsGetVictoryType());}
-// xsPlayerAttribute -> getAttr
+// xsPlayerAttribute -> getAttr 
 float getAttr(int p=0,int attr=0){return(xsPlayerAttribute(p,attr));}
-// xsSetPlayerAttribute -> setAttr
+// xsSetPlayerAttribute -> setAttr 
 void setAttr(int p=0,int attr=0,float val=0.0){xsSetPlayerAttribute(p,attr,val);}
-// xsResearchTechnology -> resTech 
+// xsResearchTechnology -> resTech ?
 bool resTech(int tech=0,bool force=true,bool abled=false,int p=0){return(xsResearchTechnology(tech,force,abled,p));}
 // xsTriggerVariable -> getVar
 int getVar(int var=0){return(xsTriggerVariable(var));}
@@ -170,38 +164,24 @@ int getVar(int var=0){return(xsTriggerVariable(var));}
 void setVar(int var=0,int val=0) {xsSetTriggerVariable(var,val);}
 
 /// Read|Write 相关函数 ///
-// xsCloseFile -> cloFile
-bool cloFile(){return(xsCloseFile());}
-// xsCreateFile -> creFile 
-bool creFile(bool append=true){return(xsCreateFile(append));}
-// xsGetDataTypeSize -> getDTsize 
-int getDTsize(int type=-1){return(xsGetDataTypeSize(type));}
-// xsGetFilePosition -> gFilePos
-int gFilePos(){return(xsGetFilePosition());}
-// xsSetFilePosition -> sFilePos
-bool sFilePos(int byte=0){return(xsSetFilePosition(byte));}
-// xsGetFileSize -> gFileSize
-int gFileSize(){return(xsGetFileSize());}
-// xsOffsetFilePosition -> osFilePos
-bool osFilePos(int dtype=0,bool forw=true){return(xsOffsetFilePosition(dtype, forw));}
-// xsOpenFile -> openFile
-bool openFile(string fname=""){return(xsOpenFile(fname));}
-// xsReadFloat -> readFloat
-float readFloat(){return(xsReadFloat());}
-// xsReadInt -> readInt
-int readInt(){return(xsReadInt());}
-// xsReadString -> readStr
-string readStr(){return(xsReadString());}
-// xsReadVector -> readVec
-vector readVec(){return(xsReadVector());}
-// xsWriteFloat -> wrFloat
-bool wrFloat(float data=0){return(xsWriteFloat(data));}
-// xsWriteInt -> wrInt
-bool wrInt(int data=0){return(xsWriteInt(data));}
-// xsWriteString -> wrStr
-bool wrStr(string data=""){return(xsWriteString(data));}
-// xsWriteVector -> wrVec
-bool wrVec(vector data=cOriginVector){return(xsWriteVector(data));}
+// xsCloseFile -> closeF
+bool closeF(){return(xsCloseFile());}
+// xsCreateFile -> createF
+bool createF(bool append=true){return(xsCreateFile(append));}
+// xsGetDataTypeSize -> dtypeSize
+// 获取指定类型数据占用字节数，对应关系如下：{"cOffsetString":4+len(str), "cOffsetInteger":4, "cOffsetFloat":4, "cOffsetVector":12, "cOffset":4, }
+int dtypeSize(int type=1){return(xsGetDataTypeSize(type));}
+// xsGetFilePosition -> getFP
+int  getFP(){return(xsGetFilePosition());}
+// xsSetFilePosition -> setFP
+bool setFP(int byte=0){return(xsSetFilePosition(byte));}
+// xsGetFileSize -> fileSize
+int fileSize(){return(xsGetFileSize());}
+// xsOffsetFilePosition -> offsetFP
+bool offsetFP(int dtype=0,bool forw=true){return(xsOffsetFilePosition(dtype, forw));}
+// xsOpenFile -> openF
+bool openF(string fname=""){return(xsOpenFile(fname));}
+
 
 /// Other Functions ///
 // xsGetFunctionID -> funcID
@@ -215,16 +195,23 @@ float round(float x=0.0,int n=0){float num=0;float x2=x*pow(10,n);int x2_i=x2; i
 int floor(float x=0.0){return(1*x);}
 // 对浮点数向上取整(exam: ceil(0.67)-> 0.0)
 int ceil(float x=0.0){int x2=x; if(abs(x-x2)>0){return(x2+1);} return(x2);}
+// xsGetRandomNumber -> randNum 
+int randNum(){return(xsGetRandomNumber());}  // [0, 32767)
+// xsGetRandomNumberLH -> randLH [! deprecate]
+int randLH(int low=0,int high=0){return(xsGetRandomNumberLH(low,high));}
+// xsGetRandomNumberMax -> randMax [! deprecate]
+mutable int randMax(int max=0){}
 // randInt: 返回区间[low, high)之间的随机整数（不含high）
 int randInt(int low=0,int high=0){return(xsGetRandomNumberLH(0,high-low)+low);}
-// random:产生[0.0, 1.0)之间的随机实数
-float random(){int n1=xsGetRandomNumberLH(0,32767); int I=xsGetRandomNumberLH(0,31); if(I>=30){n1=xsGetRandomNumberLH(0,16990);} float n2=0.000001*(n1+I*32767); return(n2);}
-// 将数值转化为bool
-bool num2bool(float x=0.0){if(x==0.0){return(false);} return(true);}
+// randLarge: 产生随机大整数
+int randLarge(int max_=999999999){int I =xsGetRandomNumberLH(0,max_/999999+1); int lar=xsGetRandomNumber(); if(I==1000){lar=xsGetRandomNumberLH(0,1000);} return(I*999999+lar);}
+// random: 产生[0.0, 1.0)之间的实数（精度0.000001）
+int random(){int n1=xsGetRandomNumberLH(0,32767); int I=xsGetRandomNumberLH(0,31); if(I>=30){n1=xsGetRandomNumberLH(0,16990);} float n2=0.000001*(n1+I*32767); return(n2);}
+// 将数字转化为bool
+bool num2bool(float x=0.0){if(x!=0.0){return(true);} return(false);}
 // 将数字转化为string
 string num2str(int num=0){return(""+num);}
 // 将bool转化为数值
 int bool2num(bool b=false) {if(b){return(1);} return(0);}
 // 输出字符串形式的bool值 {false:"false", true:"true"}
 string bool2str(bool b=false){if(b){return("true");} return("false");}
-
