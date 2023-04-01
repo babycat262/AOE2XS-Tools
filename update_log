@@ -1,7 +1,12 @@
 ## Update details for this repository ##
 [2023-03-19]
-    发布 "AOE2XS-Tools Beta_1.0"
+    <1> 发布 "AOE2XS-Tools Beta_1.0"
 
 [2023-03-24]
-    新增UDF函数`random()`于 xs_inner_func.xs 中
+    <1> xs_inner_func.xs 中新增随机实数函数`random()`
 
+[2023-04-01]
+    <1> 新增 main.xs 模块，增加数组管理列表功能
+    <2> xs_inner_func.xs 中新增 随机大整数函数 `randLarge()`
+    <3> xs-example中新增XS运用案例：随机抽卡系统[mdfc]
+    <4> vector_tools.xs 中新增函数：`zeroVector()` `nagVector()`

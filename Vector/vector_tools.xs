@@ -1,21 +1,16 @@
 // 向量的基本运算
 float epsilon = 0.000001;
 
+// [tool]四舍五入函数：对实数 x 按照指定的小数位数 n 进行四舍五入
+float round(float x=0.0,int n=0){float num=0;float x2=x*pow(10,n);int x2_i=x2; if(abs(x2-x2_i)<0.5){num=1.0*x2_i/pow(10,n);} else{num=1.0*(x2_i+1)/pow(10,n);} return(num);}
 
-float round_num(float x=0.0, int n=0) 
-{// 对实数 x 按照指定的小数位数 n 进行四舍五入
-    float x2 = x * pow(10, n);
-    int int_x2 = x2;
-    float number = 0.0;
-    if(abs(x2 - int_x2) < 0.5) {number = 1.0 * int_x2 / pow(10, n);}
-    else {number = 1.0 * (int_x2 + 1) / pow(10, n);}
-    
-    return (number);
-}
 
-vector cOnesVector() {return (vector(1,1,1));}
+// 向量 (0,0,0), (-1,-1,-1), (1,1,1)
+vector zeroVector(){return(vector( 0, 0, 0));}  // cOriginVector
+vector nagVector() {return(vector(-1,-1,-1));}  // cInvalidVector
+vector onesVector(){return(vector( 1, 1, 1));}
 
-// 向量与数字的运算： +  -  *  /
+/// 向量基本运算 ///
 vector xsVectorAddNumber(vector arg_v=cOriginVector, float num=0.0) 
 {// 向量与数字相加（减）
     float X_ = xsVectorGetX(arg_v) + num;
@@ -44,9 +39,9 @@ vector xsVectorDivNumber(vector arg_v=cOriginVector, float num=0.0, int n=4)
     float X_ = 1.0/num * xsVectorGetX(arg_v);
     float Y_ = 1.0/num * xsVectorGetY(arg_v);
     float Z_ = 1.0/num * xsVectorGetZ(arg_v);
-    X_ = round_num(X_, n);
-    Y_ = round_num(Y_, n);
-    Z_ = round_num(Z_, n);
+    X_ = round(X_, n);
+    Y_ = round(Y_, n);
+    Z_ = round(Z_, n);
     arg_v = xsVectorSet(X_, Y_, Z_);
     return (arg_v);
 }
@@ -70,7 +65,6 @@ vector xsVectorsSub(vector arg_v1 = cOriginVector, vector arg_v2 = cOriginVector
     vector arg_v = xsVectorSet(X_, Y_, Z_);
     return (arg_v);
 }
-
 
 vector xsVectorsMul(vector arg_v1 = cOriginVector, vector arg_v2 = cOriginVector) 
 {// 两个向量相乘（对应位置元素相乘）
@@ -131,16 +125,24 @@ float xsVectorsDiv(vector arg_v1 = cOriginVector, vector arg_v2 = cOriginVector)
 }
 
 float xsVectorNorm(vector arg_v=cOriginVector) 
-{// 求向量的模（长度）
+{// 求向量的模（长度）：向量的norm为它各个分量的平方和，再开平方根
     float X_ = xsVectorGetX(arg_v);
     float Y_ = xsVectorGetY(arg_v);
     float Z_ = xsVectorGetZ(arg_v);
-    // norm 
-    //float square_sum = sqrt(sum(pow(X_, 2), pow(Y_, 2), pow(Z_, 2)));    // 分量的平方和
     float norm = sqrt(pow(X_,2) + pow(Y_,2) + pow(Z_,2));
     return (norm);
 }
 
+bool setUnitSize(int p= -1, int unit_id= 119, vector V= vector(-1,-1,-1))
+{// 设置玩家单位尺寸XYZ（碰撞体积）
+    float sizeX = xsVectorGetX(V);
+    float sizeY = xsVectorGetY(V);
+    float sizeZ = xsVectorGetZ(V);
+    if((sizeX != -1) && (sizeX>=0 && sizeX<=4)){xsEffectAmount(0,unit_id, 3,sizeX,p);} else{return(false);}
+    if((sizeY != -1) && (sizeY>=0 && sizeY<=4)){xsEffectAmount(0,unit_id, 4,sizeY,p);} else{return(false);}
+    if((sizeZ != -1) && (sizeZ>=0 && sizeZ<=4)){xsEffectAmount(0,unit_id,32,sizeZ,p);} else{return(false);}
+    return (true);
+}
 
 
 /// 测试脚本 ///

@@ -512,43 +512,33 @@ iter_array(res_arr1);
 
 
 
-/// 【重磅推荐】下列函数和规则，在场景运行时自动执行。这些functions和rule的作用介绍如下： ///
+/* 
+    【推荐】数组注册管理器：
+    数组管理器 array_list，用于管理游戏中脚本创建的数组ID和数组名称，方便后续查看。
+    将下列代码放置于你的XS主文件的开头，就能正常使用数组管理功能！
+    希望这篇文档，能对喜欢 场景/战役 制作的你，有所帮助和启发。祝游戏愉快，生活顺利。
+
+
+
+
+
+
+*/
 
 // 数组管理列表 array_list ：ID编号为0的数组。该列表用于管理场景中创建的数组ID和数组名称
-int array_list = 0;    // ID:0
-
-rule array_register
-    active
-    group ArrRegister
-    runImmediately
-    priority 100
-// array_register规则：用于创建 array_list 列表
-{
-    array_list = xsArrayCreateString(1, "ArrayNames", "array_list");
-    xsEnableRule("predef_arrays");
-    xsDisableSelf();
-}
+int array_list = 0;
 
 int xsCreateArray(string dtype="float", string arr_name="", int arr_size=1) 
-{
-/* 创建数组，并加入数组管理列表：
-    参数说明：
-        arr_name: 数组名称
-        dtype: 数组的数据类型；各类型数组创建时，其默认值对应关系如下：
-            {"int": 0, "float": 0.0, "bool": false, "string": "", "vector": cOriginVector}
-        arr_size: 数组长度
-        array_list: 数组管理列表
-        返回值：int类型，返回创建数组的ID
-*/
-    if(arr_size <= 0) {xsChatData("Array.size must greater than 0."); return (Inf);}
+{// 创建数组，且将数组名称加入管理列表
+    if(arr_size <= 0) {xsChatData("Array.size must greater than 0."); return (-32768);}
     int arr_id = -1;
          if(dtype == "int") {arr_id = xsArrayCreateInt(arr_size, 0, arr_name);}
     else if(dtype == "float") {arr_id = xsArrayCreateFloat(arr_size, 0.0, arr_name);}
     else if(dtype == "bool") {arr_id = xsArrayCreateBool(arr_size, false, arr_name);}
     else if(dtype == "string") {arr_id = xsArrayCreateString(arr_size, "", arr_name);}
     else if(dtype == "vector") {arr_id = xsArrayCreateVector(arr_size, cOriginVector, arr_name);}
-    else {xsChatData("Create array failed, invalid data type."); return (Inf);}
-    // 将创建数组的 ID 和名称，添加进数组管理列表 array_list
+    else {xsChatData("Create array failed, invalid data type."); return (-32768);}
+    // 将当前数组的ID和名称添加进数组管理列表 array_list
     int list_size = xsArrayGetSize(array_list);
     // 当array_list的size小于新增数组ID+1时，扩充数组管理列表的长度
     if(list_size < arr_id+1) {xsArrayResizeString(array_list, list_size+1);}
@@ -557,25 +547,24 @@ int xsCreateArray(string dtype="float", string arr_name="", int arr_size=1)
     {xsArraySetString(array_list, arr_id, arr_name);
     //xsChatData("Register array successed.");
     }
-    else {xsChatData("Register array failed, the array already exists."); return (Inf);}
+    else {xsChatData("Register array failed, the array already exists."); return (-32768);}
     return (arr_id);
 }
-/*  说明：
-      1.通过 xsCreateArray() 函数创建数组之后，通过调用"array_tools.xs"模块中的 xsArrayGetName(arr_id) 函数，
-        能够获得该数组ID对应的数组名称。
-      2.通过调用数组元素迭代函数 iter_array(array_list, "array_list", "string") ，能够看到当前已注册进管理列表array_list
-        的所有数组的ID以及名称，方便玩家对已创建数组的情况有一目了然的认识。
+/*
+    函数说明：
+    1.通过 xsCreateArray() 创建数组之后，可以通过调用 array_tools.xs 模块中的 xsArrayGetName(arr_id) 函数，
+      能够通过数组ID得到对应的数组名称；
+    2.通过调用数组元素迭代函数 iter_array(array_list, "array_list", "string") ，能够看到当前已注册进管理列表array_list
+      的所有数组的ID以及名称，让你能对已创建数组的情况有一目了然的认识。
 */
 
-/*
-    xs_arr01 ~ xs_arr10 变量，用于存储 __xsPreDefinedArrays() 函数创建的10个预留数组的ID。这些ID指向的数组，
-    在暂存某些函数的中间结果的数组元素及其索引时十分方便。
-*/
+// xs_arr01 ~ xs_arr10 变量，用于存储 __xsPreDefinedArrays() 函数创建的10个预留数组的ID。这些ID指向的数组，
+// 用于暂存某些函数运算中间结果的缓存值，优化数组开销。
 int xs_arr01 = -1;  int xs_arr02 = -1;
 int xs_arr03 = -1;  int xs_arr04 = -1;
 int xs_arr05 = -1;  int xs_arr06 = -1;
 int xs_arr07 = -1;  int xs_arr08 = -1;
-int xs_arr09 = -1;  int xs_arr10 = -1;  
+int xs_arr09 = -1;  int xs_arr10 = -1;
 void __xsPreDefinedArrays(int pre_size=1) 
 {// 暂存数组 元素值 和 索引 的预留数组
     // 参数说明：pre_size: 预留数组创建时的数组长度，默认为 1
@@ -600,29 +589,15 @@ void __xsPreDefinedArrays(int pre_size=1)
     xs_arr10 =    // arr.id = 10, 该数组用于暂存 xs_arr09 数组的 argsort
         xsCreateArray("int", "varr_args", pre_size);
 }
-// 注册10个预留数组的rule
-rule predef_arrays
+
+// 此Rule初始化 array_list.ID + 10个预留数组的ID
+rule array_register
     inactive
-    group PreArrays
-    minInterval 1
-    priority 99
+    group ArrayRegister
+    runImmediately
+    priority 100
 {
-    __xsPreDefinedArrays();
+    array_list = xsArrayCreateString(1, "ArrayNames", "array_list");  // 注册 array_list.ID
+    __xsPreDefinedArrays();    // 注册预留数组ID
     xsDisableSelf();
 }
-/*
-    使用说明：将上述这些代码（本文档的 517~612 行），放在您场景引用的XS文件的开头，就能正常使用这些功能！
-    希望这篇文档，能对喜欢 场景/战役 制作的你，有所帮助和启发。祝游戏愉快，生活顺利。
-*/
-
-
-
-/*  【意见反馈】：
-    如果在使用这些功能和代码的过程中，遇到问题和BUG，或者有好的 idea，欢迎与我取得联系。
-    您的宝贵意见是我改进的动力！
-    作者：babycat
-    联系方式： 
-       QQ: 2855241645
-       微信号：babycat262
-
-*/

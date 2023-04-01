@@ -124,19 +124,19 @@ int MapID(){return(xsGetMapID());}
 int MapH(){return(xsGetMapHeight());}
 // xsGetMapWidth -> MapW 
 int MapW(){return(xsGetMapWidth());}
-// xsGetMapName -> MapName ?
-string MapName(bool ext=true){return(xsGetMapName(ext));}
-// xsGetNumPlayers -> getNumP ?
+// xsGetMapName -> MapName 
+string MapName(bool extend=false){return(xsGetMapName(extend));}
+// xsGetNumPlayers -> getNumP 
 int getNumP(){return(xsGetNumPlayers());}
 // xsGetObjectCount -> objCount 
 int objCount(int p=0,int unit=0){return(xsGetObjectCount(p,unit));}
 // xsGetObjectCountTotal -> objCountT 
 int objCountT(int p=0,int unit=0){return(xsGetObjectCountTotal(p,unit));}
-// xsGetPlayerCivilization(int playerNumber) -> getCiv ?
+// xsGetPlayerCivilization(int playerNumber) -> getCiv 
 int getCiv(int p=0){return(xsGetPlayerCivilization(p));}
 // xsSetContextPlayer -> defaultP 
 void defaultP(int p=1){xsSetContextPlayer(p);}
-// xsGetPlayerInGame -> isAliveP ?
+// xsGetPlayerInGame -> isAliveP 
 bool isAliveP(int p=0){return(xsGetPlayerInGame(p));}
 // xsGetPlayerNumberOfTechs -> getResTechsP 
 int getAviTechsP(int p=0){return(xsGetPlayerNumberOfTechs(p));}
@@ -146,17 +146,17 @@ int vicCond(){return(xsGetVictoryCondition());}
 int vicSecCond(){return(xsGetVictoryConditionForSecondaryGameMode());}
 // xsGetVictoryPlayer -> vicP 
 int vicP(){return(xsGetVictoryPlayer());}
-// xsGetVictoryTime -> vicTime
+// xsGetVictoryTime -> vicTime 
 int vicTime(){return(xsGetVictoryTime());}
 // xsGetVictoryTimeForSecondaryGameMode() -> vicSecTime
 int vicSecTime(){return(xsGetVictoryTimeForSecondaryGameMode());}
-// xsGetVictoryType -> vicType ?
+// xsGetVictoryType -> vicType 
 int vicType(){return(xsGetVictoryType());}
 // xsPlayerAttribute -> getAttr 
 float getAttr(int p=0,int attr=0){return(xsPlayerAttribute(p,attr));}
 // xsSetPlayerAttribute -> setAttr 
 void setAttr(int p=0,int attr=0,float val=0.0){xsSetPlayerAttribute(p,attr,val);}
-// xsResearchTechnology -> resTech ?
+// xsResearchTechnology -> resTech 
 bool resTech(int tech=0,bool force=true,bool abled=false,int p=0){return(xsResearchTechnology(tech,force,abled,p));}
 // xsTriggerVariable -> getVar
 int getVar(int var=0){return(xsTriggerVariable(var));}
@@ -164,6 +164,8 @@ int getVar(int var=0){return(xsTriggerVariable(var));}
 void setVar(int var=0,int val=0) {xsSetTriggerVariable(var,val);}
 
 /// Read|Write 相关函数 ///
+// xsOpenFile -> openF
+bool openF(string fname=""){return(xsOpenFile(fname));}
 // xsCloseFile -> closeF
 bool closeF(){return(xsCloseFile());}
 // xsCreateFile -> createF
@@ -172,15 +174,14 @@ bool createF(bool append=true){return(xsCreateFile(append));}
 // 获取指定类型数据占用字节数，对应关系如下：{"cOffsetString":4+len(str), "cOffsetInteger":4, "cOffsetFloat":4, "cOffsetVector":12, "cOffset":4, }
 int dtypeSize(int type=1){return(xsGetDataTypeSize(type));}
 // xsGetFilePosition -> getFP
-int  getFP(){return(xsGetFilePosition());}
+int getFP(){return(xsGetFilePosition());}
 // xsSetFilePosition -> setFP
 bool setFP(int byte=0){return(xsSetFilePosition(byte));}
 // xsGetFileSize -> fileSize
 int fileSize(){return(xsGetFileSize());}
 // xsOffsetFilePosition -> offsetFP
-bool offsetFP(int dtype=0,bool forw=true){return(xsOffsetFilePosition(dtype, forw));}
-// xsOpenFile -> openF
-bool openF(string fname=""){return(xsOpenFile(fname));}
+bool offsetFP(int dtype=0,bool forw=true){return(xsOffsetFilePosition(dtype,forw));}
+
 
 
 /// Other Functions ///
