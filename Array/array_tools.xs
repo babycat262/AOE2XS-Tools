@@ -1,5 +1,5 @@
-/*  array_tools.xs
-                文档说明 ：
+/* 
+  array_tools.xs  文档说明 ：
     本文档整理了各类与数组和矩阵操作相关的XS函数封装，供玩家使用。
     以下几种形式的函数，有各自不同的用途（以 "func" 代表函数名称），加以说明：
         
@@ -7,9 +7,9 @@
         func_ : 这些函数是对数组或矩阵的“就地”操作，函数运行之后，原操作对象发生更改！
       __func  : 一些管理数组和矩阵的专有函数，通常情况下不调用它们，除非当你有需要时。
     
-    被 mutable 关键字修饰的函数，支持以后对其函数体进行重写。
+    被 mutable 关键字修饰的函数，支持后续对其函数体进行重写。
     
-    【警告】：形如 "xxx_i" 的全局变量，用于 动态生成 新创建的 数组或矩阵 的名称，不得随意更改，否则后果自负！！！
+    【警告】：形如 "xxx_i", "xxx_xxx" 的全局变量，用于动态生成新创建的"数组"或"矩阵"的名称，不得随意更改，否则后果自负！！！
 */
 
 
@@ -21,6 +21,16 @@ const float PI = 3.1416;    // 圆周率
 const float E_ = 2.7183;    // 自然底数 E
 
 const string NULL = "";    // 空字符串常量
+
+mutable 
+int floor(float x=0.0) {return(1*x);}
+// 对实数向下取整：-0.67 ~ -1
+mutable 
+int randInt(int low=0,int high=0){return(xsGetRandomNumberLH(0,high-low)+low);}
+mutable 
+float random(){int n1=xsGetRandomNumber(); int I=xsGetRandomNumberLH(0,31); if(I>=30){n1=xsGetRandomNumberLH(0,16990);} float n2=0.000001*(n1+I*32767); return(n2);}
+mutable 
+int randLarge(int max_=999999999){int I =xsGetRandomNumberLH(0,max_/999999+1); int lar=xsGetRandomNumber(); if(I==1000){lar=xsGetRandomNumberLH(0,1000);} return(I*999999+lar);}
 
 
 
@@ -287,7 +297,7 @@ int xsArraysDiv(int arr1_id=-1, int arr2_id=-1, int res_arr=-1)
     return (Inf);
 }
 
-int xsArrayPower(int arr_id=-1, int n=1, bool inplace=false) 
+int xsArrayPow(int arr_id=-1, float n=1, bool inplace=false) 
 {
 /* 数组元素的幂指数运算：
     参数说明：
@@ -370,10 +380,10 @@ int xsArrayPiece(int arr_id=-1, int start_idx=-1, int end_idx=-1)
     if(start_idx == -1) {start_idx = 0;}
     if(end_idx == -1) {end_idx = xsArrayGetSize(arr_id)-1;}
     
-    int piece_len = end_idx - start_idx;
+    int piece_len = end_idx - start_idx + 1;
     int piece = xsArrayCreateFloat(piece_len, 0.0, "piece"+piece_i); piece_i++;
     for(idx = 0; < piece_len) 
-    {xsArraySetFloat(piece, idx, xsArrayGetFloat(arr_id, idx + start_idx));}
+    {xsArraySetFloat(piece, idx, xsArrayGetFloat(arr_id, idx+start_idx));}
     return (piece);
 }
 
@@ -658,7 +668,7 @@ int xsReverseIntArray(int arr_id=-1, bool inplace=false)
 */
     int arr_size = xsArrayGetSize(arr_id);
     int e1 = 0; int e2 = 0;
-    int idx1 = 0; int idx2 = arr1_size-1;
+    int idx1 = 0; int idx2 = arr_size-1;
     if(inplace == false) // 新建数组，存储反转后的数组元素
     {
         int rev_arr = xsArrayCreateInt(arr_size, 0, "rev_iarr"+rev_arr_i); rev_arr_i++;
@@ -695,7 +705,7 @@ int xsReverseFloatArray(int arr_id=-1, bool inplace=false)
 */
     int arr_size = xsArrayGetSize(arr_id);
     float e1 = 0; float e2 = 0;
-    int idx1 = 0; int idx2 = arr1_size-1;
+    int idx1 = 0; int idx2 = arr_size-1;
     if(inplace == false) // 新建数组，存储反转后的数组元素
     {
         int rev_arr = xsArrayCreateFloat(arr_size, 0.0, "rev_farr"+rev_arr_i); rev_arr_i++;
@@ -1163,21 +1173,99 @@ void iter_argsort(int args_id=-1, string arr_name="")
 
 
 /// 二维数组（矩阵）的基本运算 ///
-vector xsMatrixDims(int mat_id=-1, string mat_name="") 
+int mat_temp = 0;
+mutable 
+int xsCreateMatrix(string mat_name="",  //要创建矩阵的名称
+                   int row=0,    //矩阵行数
+                   int col=0,    //矩阵列数
+                   float def_val=0.0,    //元素默认填充值（default: 0）
+                   string rand_func="",    //使用随机函数
+                   int fill_arr=-1     //指定一个数组（ID > 0），用数组元素填充矩阵，此参数会覆盖`def_val`参数的默认值
+                   )
+{// 创建一个指定数据类型和形状的矩阵，并返回其ID
+    if((row <= 0) || (col <= 0)) {xsChatData("Invalid `row` or `col` to matrix"); return (Inf);}
+    if((row == 1) && (col == 1)) 
+    {
+        int new_arr = xsArrayCreateFloat(1, def_val, "new_arr"+farr_temp); mat_temp++;
+             if(rand_func=="random") {xsArraySetFloat(new_arr, 0, random());}
+        else if(rand_func=="randInt") {xsArraySetFloat(new_arr, 0, randInt());}
+        else if(rand_func=="randLarge") {xsArraySetFloat(new_arr, 0, randLarge());}
+        //else if(rand_func=="?") {xsArraySetFloat(new_arr, 0, ?);}
+        else {}
+        return (new_arr);
+    }
+    
+    if(mat_name == "") {mat_name = "mat_"+mat_temp;}
+    int new_mat = xsArrayCreateInt(col, 0, mat_name); mat_temp++;
+    int sub_arr = -1;    // 矩阵的各列向量ID（ArrayID）
+
+    if(fill_arr > 0) {
+
+        // 若指定了用于值填充的数组，用该数组元素填充矩阵。
+        // 当Matrix与Array长度不匹配时，未匹配的元素使用默认值
+        int arr_size = xsArrayGetSize(fill_arr);
+        int mat_size = row * col;
+        int e_idx = 0;    // fill_arr中当前填充元素的索引下标
+        //new_mat = xsArrayCreateInt(col, -1, mat_name+mat_temp); mat_temp++;
+        for(c = 0; < col)
+        {
+            sub_arr = xsArrayCreateFloat(row, def_val, "mat_sarr"+farr_temp); farr_temp++;
+            for(r = 0; < row)
+            {
+                e_idx = row*c+r; 
+                if(e_idx >= arr_size) {continue;}  // skip assignment
+                xsArraySetFloat(sub_arr, r, xsArrayGetFloat(fill_arr, e_idx));
+            }
+            xsArraySetInt(new_mat, c, sub_arr);  // 将列向量ID加进矩阵的列索引
+        }
+        
+        return (new_mat);
+    }
+    else 
+    {
+        for(c = 0; < col) 
+        {
+            sub_arr = xsArrayCreateFloat(row, def_val, "mat_sarr"+farr_temp); farr_temp++;
+            for(r = 0; < row)
+            {
+                if(rand_func == "random") {xsArraySetFloat(sub_arr, r, random());}
+                if(rand_func == "randInt") {xsArraySetFloat(sub_arr, r, randInt());}
+                if(rand_func == "randLarge") {xsArraySetFloat(sub_arr, r, randLarge());}
+                //if(rand_func=="?") {xsArraySetFloat(sub_arr, r, ?);}
+                //if(rand_func=="?") {xsArraySetFloat(sub_arr, r, ?);}
+            }
+            xsArraySetInt(new_mat, c, sub_arr);  // 子数组ID添加进矩阵列索引
+        }
+        return (new_mat);
+    }
+    return (Inf);
+}
+
+vector xsMatrixShape(int mat_id=-1, string mat_name="") 
 {
-/* 求矩阵的维度
+/* 求矩阵的形状 (M, N)
     参数说明：
         mat_id: 矩阵的ID
-        return：vector类型；返回一个包含矩阵维度的向量
+        return：vector类型；返回一个包含矩阵维度(行数,列数)的向量
 */
-    int cols = xsArrayGetSize(mat_id);
-    int rows = xsArrayGetSize(xsArrayGetInt(mat_id, 0));
-
     if(mat_name == "") {mat_name = ""+mat_id;}
-    xsChatData("The dimisions of Matrix("+mat_name+"): ("+rows+", "+cols+")");
-    
-    return (xsVectorSet(rows, cols, 0.0));
+    int cols = 0; int rows = 0;
+    // 矩阵第0列的向量（数组）ID编号
+    int col0_id = xsArrayGetInt(mat_id, 0);
+    if(col0_id <= 10) // 判断该列ID是否合法
+    {
+        xsChatData("Matrix "+mat_name+" is not exist.");
+        return (cOriginVector);
+    }
+    else 
+    {
+        cols = xsArrayGetSize(mat_id);
+        rows = xsArrayGetSize(col0_id);
+        //xsChatData("Matrix("+mat_name+").shape: ("+rows+", "+cols+")");
+    }
+    return (xsVectorSet(rows, cols, 0));
 }
+
 
 int xsMatrixToArray(int mat_id=-1) 
 {
@@ -1196,7 +1284,7 @@ int xsMatrixToArray(int mat_id=-1)
     return (res_arr);
 }
 
-int mat_temp = 0;
+
 int xsArrayToMatrix(int arr_id=-1, int row=-1, int col=-1) 
 {
 /* 将一维数组reshape成 (row, col) 的矩阵
@@ -1250,14 +1338,16 @@ float xsMatrixElement(int mat_id=-1, int row=0, int col=0)
         col: 元素在矩阵中的列索引
         return返回值：float类型，返回索引处的元素值
 */
-    int rows = xsArrayGetSize(xsArrayGetInt(mat_id, 0));
+    // 矩阵第0列的向量（数组）ID编号
+    int col0_id = xsArrayGetInt(mat_id, 0);
+    int rows = xsArrayGetSize(col0_id);
     int cols = xsArrayGetSize(mat_id);
     if((row >= 0 && row < rows) && (col >= 0 && col < cols)) 
-    {// 若同时指定了row 和 col，则返回 matrix[row, col]
+    {// 若行索引和列索引均在有效范围，则获取 mat[row, col]
         return (xsArrayGetFloat(xsArrayGetInt(mat_id, col), row));
     }
-    else {xsChatData("Invalid `row` index or `col` index." );}
-    return (1.0*Inf);
+    else {xsChatData("Index `row` or `col` out of range." );}
+    return (-32768.0); 
 }
 
 int xsMatrixAddNum_(int mat_id=-1, float num=0.0) 
@@ -1553,4 +1643,23 @@ int xsConcatMatrix(int mat1_id=-1, int mat2_id=-1, int axis=0)
     return (Inf);
 }
 
-
+void iter_matrix(int mat_id=-1, string mat_name="")
+{
+/* 遍历矩阵中每个[r, c]元素，并打印输出
+    参数说明：
+    mat_id: 矩阵ID
+    mat_name: 矩阵标识名称
+*/
+    int rows = xsArrayGetSize(xsArrayGetInt(mat_id, 0));
+    int cols = xsArrayGetSize(mat_id);
+    if(mat_name == ""){mat_name = ""+mat_id;}
+    float temp_e = 0.0;
+    for(c = 0; < cols) // 遍历所有列
+    {
+        for(r = 0; < rows) // 遍历所有行
+        {
+            temp_e = xsArrayGetFloat(xsArrayGetInt(mat_id, c), r);
+            xsChatData("Matrix("+mat_name+")["+r+","+c+"] = " + temp_e);
+        }
+    }
+}

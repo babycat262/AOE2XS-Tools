@@ -207,7 +207,7 @@ int randInt(int low=0,int high=0){return(xsGetRandomNumberLH(0,high-low)+low);}
 // randLarge: 产生随机大整数
 int randLarge(int max_=999999999){int I =xsGetRandomNumberLH(0,max_/999999+1); int lar=xsGetRandomNumber(); if(I==1000){lar=xsGetRandomNumberLH(0,1000);} return(I*999999+lar);}
 // random: 产生[0.0, 1.0)之间的实数（精度0.000001）
-int random(){int n1=xsGetRandomNumberLH(0,32767); int I=xsGetRandomNumberLH(0,31); if(I>=30){n1=xsGetRandomNumberLH(0,16990);} float n2=0.000001*(n1+I*32767); return(n2);}
+float random(){int n1=xsGetRandomNumber(); int I=xsGetRandomNumberLH(0,31); if(I>=30){n1=xsGetRandomNumberLH(0,16990);} float n2=0.000001*(n1+I*32767); return(n2);}
 // 将数字转化为bool
 bool num2bool(float x=0.0){if(x!=0.0){return(true);} return(false);}
 // 将数字转化为string

@@ -10,3 +10,11 @@
     <2> xs_inner_func.xs 中新增 随机大整数函数 `randLarge()`
     <3> xs-example中新增XS运用案例：随机抽卡系统[mdfc]
     <4> vector_tools.xs 中新增函数：`zeroVector()` `nagVector()`
+
+[2023-04-14]
+    <1> 新增机器学习库 "AOE2_ML"，以及用于机器学习的工具模块 ml_tools.xs和knn_clf.xs 实现了基础分类算法KNN（处于测试阶段）
+    <2> 新增测试案例 "rule&static计数器探索Demo"
+    <3> 对"圣物驻扎单位属性增益机制"进行了优化升级，采用static静态变量保护局部统计结果。将该模块重命名为 relic_buff.xs
+    <4> 对数组管理机制 "main.xs" 内容进行调整，修复发现的BUG
+    <5> 对 Array/array_tools.xs 模块的部分内容进行调整
+    <6> 【注意】：出于实用性考虑，后续将不再对 Vector/ 目录下向量相关的内容进行更新，将重点维护 "AOE2_ML", "xs-examples", "Array" 这些部分！
